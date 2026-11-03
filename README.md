@@ -274,8 +274,11 @@ checked with the self-test described under Testing.
 
 The tag creates a draft release with the notes of that version from
 `CHANGELOG.md`, both installers are attached to it, and it is published once
-both builds have passed. Started by hand, the workflow only builds, and the
-installers are kept as artifacts of the run.
+both builds have passed. Started by hand (Actions, build, "Run workflow"), the
+workflow only builds, and the installers are kept as artifacts of the run.
+With "release" ticked it releases the version of `package.json` instead of
+step 2, making the tag when the release is published, and with "windows"
+unticked it builds and releases the macOS `.dmg` only.
 
 ### Changing the app icon
 

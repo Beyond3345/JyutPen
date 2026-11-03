@@ -2,13 +2,24 @@
 # A pushed tag v<version> creates a draft release with the notes of that version
 # from CHANGELOG.md; both jobs build, check and attach their installer, and the
 # release is published once both have passed. Started by hand, the workflow
-# only builds and keeps the installers as workflow artifacts.
+# only builds and keeps the installers as workflow artifacts, unless "release"
+# is ticked: then it releases the version of package.json in the same way,
+# with the Windows installer only if "windows" is ticked too.
 # The xjyutping packages are checked out next to this repository, as in the
 # workspace; update the two commits below when a new release of them is wanted.
 name: build
 
 on:
   workflow_dispatch:
+    inputs:
+      release:
+        description: Release the version of package.json (the tag must not exist yet)
+        type: boolean
+        default: false
+      windows:
+        description: Build the Windows installer
+        type: boolean
+        default: true
   push:
     tags: ['v*']
 
@@ -21,7 +32,7 @@ env:
 
 jobs:
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.release == 'true'
     runs-on: ubuntu-latest
     outputs:
       id: ${{ steps.draft.outputs.result }}
@@ -32,7 +43,15 @@ jobs:
         with:
           script: |
             const fs = require('fs')
-            const version = context.ref.replace('refs/tags/v', '')
+            const tagged = context.ref.startsWith('refs/tags/v')
+            const version = tagged ? context.ref.replace('refs/tags/v', '')
+              : JSON.parse(fs.readFileSync('package.json', 'utf8')).version
+            const windows = '${{ github.event.inputs.windows }}' !== 'false'
+            // a release started by hand makes its tag when it is published
+            if (!tagged && await github.rest.git.getRef({ owner: context.repo.owner, repo: context.repo.repo,
+              ref: `tags/v${version}` }).then(() => true, () => false)) {
+              throw new Error(`v${version} exists already; bump the version first`)
+            }
             // the entry of this version in Part I of CHANGELOG.md
             const log = fs.readFileSync('CHANGELOG.md', 'utf8')
             const at = log.indexOf(`## [${version}]`)
@@ -44,11 +63,13 @@ jobs:
             }
             const body = `${notes}\n\n### Installing\n\n`
               + `- macOS 13.3 or later (Apple Silicon and Intel): open \`xjyutping-Tool_${version}_universal.dmg\`, drag the app into Applications, open it once and allow it in System Settings, Privacy & Security, "Open anyway" (the app is not signed with an Apple Developer ID).\n`
-              + `- Windows 10 or 11: run \`xjyutping-Tool_${version}_x64-setup.exe\`; if SmartScreen warns about an unknown publisher, choose "More info", then "Run anyway".\n\n`
-              + 'Neither needs Python or TeX on the computer. See the README for how to use the tool.'
+              + (windows ? `- Windows 10 or 11: run \`xjyutping-Tool_${version}_x64-setup.exe\`; if SmartScreen warns about an unknown publisher, choose "More info", then "Run anyway".\n` : '')
+              + '\n'
+              + `${windows ? 'Neither needs' : 'It does not need'} Python or TeX on the computer. See the README for how to use the tool.`
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner, repo: context.repo.repo,
-              tag_name: `v${version}`, name: `xjyutping-Tool ${version}`, body, draft: true })
+              tag_name: `v${version}`, target_commitish: context.sha, name: `xjyutping-Tool ${version}`,
+              body, draft: true })
             return data.id
 
   build:
@@ -58,11 +79,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: windows-latest
-            args: --bundles nsis
-          - os: macos-latest
-            args: --target universal-apple-darwin
+        os: [windows-latest, macos-latest]
+        # a run started by hand can leave Windows out
+        exclude:
+          - os: ${{ github.event.inputs.windows == 'false' && 'windows-latest' || 'none' }}
     runs-on: ${{ matrix.os }}
     steps:
       # keep LF endings in the checkouts, which the bash script needs
@@ -115,7 +135,7 @@ jobs:
         with:
           projectPath: xjyutping-Tool
           releaseId: ${{ needs.release.outputs.id }}
-          args: ${{ matrix.args }}
+          args: ${{ runner.os == 'Windows' && '--bundles nsis' || '--target universal-apple-darwin' }}
           uploadWorkflowArtifacts: true
       # the built app loads Python, reads a sample with corrections and compiles
       # it with the bundled engine, then writes a report (see src-tauri/src/main.rs)
