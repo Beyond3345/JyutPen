@@ -20,6 +20,10 @@ human or agent.
 
 ## [Unreleased]
 
+There are no unreleased changes yet.
+
+## [1.3.4] - 2026-11-03
+
 ### Changed
 
 - xjyutping-py 1.3.2 and xjyutping-tex 1.5.3, which fix the readings that a
