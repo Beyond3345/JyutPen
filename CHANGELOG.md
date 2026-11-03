@@ -20,7 +20,15 @@ human or agent.
 
 ## [Unreleased]
 
-There are no unreleased changes yet.
+### Changed
+
+- xjyutping-py 1.3.2 and xjyutping-tex 1.5.3, which fix the readings that a
+  teacher corrected in the tool and exported for the maintainer. 袋 standing
+  alone is *doi2* "bag" (冇帶袋), while the verb (袋住) and the measure word
+  (一袋米) stay *doi6*. 女 standing alone is *neoi2* "daughter" at the end of
+  a line and before a particle, a verb, a pronoun or a number (我個女三歲),
+  and stays *neoi5* "female" before a noun (女同事). 購物袋, 越南河 and 涼茶舖
+  are read *doi2*, *ho2* and *pou2*.
 
 ## [1.3.3] - 2026-10-22
 
