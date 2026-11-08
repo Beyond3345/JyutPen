@@ -3,7 +3,8 @@
 This guide builds the Windows installer of 粵筆 · JyutPen on a Windows
 computer and adds it to a GitHub release that was made for macOS only. That
 release comes from the build workflow started by hand with "release" ticked
-and "windows" unticked (see "Building from source" in the README). The
+and "windows" unticked (see
+[Building from source](../README.md#building-from-source) in the README). The
 examples use version 1.4.0; for another version, replace it everywhere.
 
 Do not push a tag for the version from Windows. A pushed tag `v…` starts the

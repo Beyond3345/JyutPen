@@ -282,9 +282,9 @@ both builds have passed. Started by hand (Actions, build, "Run workflow"), the
 workflow only builds, and the installers are kept as artifacts of the run.
 With "release" ticked it releases the version of `package.json` instead of
 step 2, making the tag when the release is published, and with "windows"
-unticked it builds and releases the macOS `.dmg` only. `WINDOWS-BUILD.md`
-explains how to build the Windows installer on a Windows computer and add it
-to such a release.
+unticked it builds and releases the macOS `.dmg` only.
+[docs/windows-build.md](docs/windows-build.md) explains how to build the
+Windows installer on a Windows computer and add it to such a release.
 
 ### Changing the app icon
 
