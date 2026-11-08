@@ -44,7 +44,7 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico",
-      "icons/AppIcon.icon"
+      "icons/Assets.car"
     ],
     "externalBin": ["binaries/tectonic"],
     "resources": { "resources/texbundle/": "texbundle/" },

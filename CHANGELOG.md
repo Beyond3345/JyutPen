@@ -42,8 +42,8 @@ There are no unreleased changes yet.
 
 ### Added
 
-- `scripts/icon.sh` exports the icon for older macOS, Windows and the
-  window's header.
+- `scripts/icon.sh` compiles the icon into `src-tauri/icons/Assets.car` for the
+  app bundle, and exports it for older macOS, Windows and the window's header.
 
 ## [1.3.4] - 2026-11-03
 

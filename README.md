@@ -259,13 +259,7 @@ xjyutping/
 4. Run `CI=true npm run tauri build -- --target universal-apple-darwin` for the macOS app and `.dmg`
 
 The `CI=true` makes Tauri skip arranging the `.dmg` window through Finder,
-which fails when the build does not run in a logged-in Terminal. Tauri
-compiles `src-tauri/icons/AppIcon.icon` with Xcode's `actool`. The `actool` of
-Xcode 27.1 fails on every Icon Composer document ("Failed to create a catalog
-from the Icon Studio document … Bad file descriptor"), so on a Mac with it,
-point `DEVELOPER_DIR` at Xcode 26, or take `icons/AppIcon.icon` out of
-`bundle.icon` in `src-tauri/tauri.conf.json` for that build (the app then has
-the light icon only). The workflow builds on macOS 26 with Xcode 26.
+which fails when the build does not run in a logged-in Terminal.
 
 Before each run, `scripts/vendor.mjs` copies the Python package, the
 xjyutping LaTeX package and the Pyodide runtime into the app and downloads
@@ -298,14 +292,20 @@ The icon is `src-tauri/icons/AppIcon.icon`, an Icon Composer document: 粵 in
 Noto Serif CJK HK Bold under jyut⁶ in Source Sans 3 Semibold, joined by a blue
 brace, over two glass waves. Each layer has its colours for the light and the
 dark look, and white for the tinted one; macOS 26 and later show it with the
-Liquid Glass effect (Tauri compiles it into `Assets.car`).
+Liquid Glass effect.
 
 1. Edit `src-tauri/icons/AppIcon.icon` in Icon Composer
-2. Run `scripts/icon.sh`, which exports it for the systems that cannot use it:
-   `icon-source.png` (the light icon on the 1024 px grid of macOS icons), the
-   `.icns` of older macOS, the Windows `.ico` and the PNGs made from it by
-   `tauri icon`, and `mark-light.png` and `mark-dark.png` for the window's
-   header
+2. Run `scripts/icon.sh` (it needs Xcode 26 or later). It compiles the icon
+   into `src-tauri/icons/Assets.car`, which the app carries, and exports it
+   for the systems that cannot use it: `icon-source.png` (the light icon on
+   the 1024 px grid of macOS icons), the `.icns` of older macOS, the Windows
+   `.ico` and the PNGs made from it by `tauri icon`, and `mark-light.png` and
+   `mark-dark.png` for the window's header
+
+The builds take `Assets.car` as it is rather than compiling the `.icon`
+themselves: `actool`'s background server fails ("failed to run actool", "Bad
+file descriptor") when Tauri is the program that starts it, so `icon.sh`
+stops any running server first and compiles from the shell.
 
 ### Changing the PDF template
 

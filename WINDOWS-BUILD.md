@@ -99,7 +99,7 @@ npx tauri build --bundles nsis
 
 The installer is
 `src-tauri\target\release\bundle\nsis\JyutPen_1.4.0_x64-setup.exe`. The
-build ignores `src-tauri/icons/AppIcon.icon`, which only macOS uses; Windows
+build ignores `src-tauri/icons/Assets.car`, which only macOS uses; Windows
 gets `icon.ico`.
 
 ## 5. Test it
