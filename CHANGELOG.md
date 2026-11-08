@@ -1,8 +1,8 @@
 # Changelog
 
-This file records all notable changes to xjyutping-Tool. The format follows
-[Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), and versions
-follow [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
+This file records all notable changes to 粵筆 · JyutPen (xjyutping-Tool up to
+1.3.4). The format follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/),
+and versions follow [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 The version is written in three places, `package.json`, `src-tauri/Cargo.toml`
 and `src-tauri/tauri.conf.json`, and a release bumps all three and gets an
@@ -21,6 +21,29 @@ human or agent.
 ## [Unreleased]
 
 There are no unreleased changes yet.
+
+## [1.4.0] - 2026-11-08
+
+### Changed
+
+- The tool is now called 粵筆 · JyutPen. The app, its installers and its
+  window carry the new name (`JyutPen.app`, `JyutPen_<version>_universal.dmg`,
+  `JyutPen_<version>_x64-setup.exe`). It keeps the identifier of
+  xjyutping-Tool, so the lessons, settings and corrections carry over. The new
+  app does not replace the old one: delete xjyutping-Tool from Applications on
+  macOS, or uninstall it on Windows, leaving its application data.
+- A new icon: 粵 under jyut⁶, joined by a blue brace, over two glass waves. It
+  is an Icon Composer document with a light, a dark and a tinted look, which
+  macOS 26 and later show with the Liquid Glass effect; older macOS and
+  Windows get the light icon. The window's header shows the light or the dark
+  icon with the system's appearance.
+- xjyutping-py 1.3.3 and xjyutping-tex 1.5.4: 吃飯 is *hek3 faan6*
+  (我哋去吃飯), not *jaak3 faan6*.
+
+### Added
+
+- `scripts/icon.sh` exports the icon for older macOS, Windows and the
+  window's header.
 
 ## [1.3.4] - 2026-11-03
 

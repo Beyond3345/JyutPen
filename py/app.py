@@ -1,4 +1,4 @@
-"""Bridge between the xjyutping-Tool UI and xjyutping.
+"""Bridge between the JyutPen UI and xjyutping.
 
 The UI passes a lesson as JSON and gets JSON back (render, candidates, check,
 clean, migrate) or the LaTeX source of the vocabulary list (make_tex).

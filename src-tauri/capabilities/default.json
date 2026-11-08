@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "What the xjyutping-Tool window may call; files and the PDF go through the app's own commands",
+  "description": "What the JyutPen window may call; files and the PDF go through the app's own commands",
   "windows": ["main"],
   "permissions": [
     "core:default",

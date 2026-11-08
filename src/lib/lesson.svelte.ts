@@ -563,7 +563,7 @@ class Store {
       else this.notify(`Opened ${file[0]}`)
       this.#warnNotInstalled()
     } catch {
-      this.notify('This file is not an xjyutping-Tool lesson.', true)
+      this.notify('This file is not a JyutPen lesson.', true)
     }
   }
 }

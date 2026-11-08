@@ -1,4 +1,4 @@
-// Commands of xjyutping-Tool: compile the vocabulary list with the bundled
+// Commands of JyutPen: compile the vocabulary list with the bundled
 // Tectonic, read and write lesson and corrections files chosen in dialogs, and
 // find the fonts the teacher installed that the app may not include.
 // Prevents an additional console window on Windows in release, DO NOT REMOVE!!
@@ -430,7 +430,7 @@ fn main() {
             self_test_done
         ])
         .run(tauri::generate_context!())
-        .expect("error while running xjyutping-Tool");
+        .expect("error while running JyutPen");
 }
 
 #[cfg(test)]

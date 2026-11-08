@@ -27,8 +27,8 @@ permissions:
   contents: write
 
 env:
-  XJYUTPING_PY_COMMIT: b7b74eb41a263ee7d8f6679421560682e9ff63dc   # xjyutping-py 1.3.2
-  XJYUTPING_TEX_COMMIT: a10818b2165d32f8fbf3efac9c5bae725a760b0c  # xjyutping-tex 1.5.3
+  XJYUTPING_PY_COMMIT: b24cf669fa9a980e838dd249bbfe37ef9e845bcf   # xjyutping-py 1.3.3
+  XJYUTPING_TEX_COMMIT: 3c945828abca6ae573a7515f57a8f98f1f88a32f  # xjyutping-tex 1.5.4
 
 jobs:
   release:
@@ -62,13 +62,13 @@ jobs:
               notes = (end < 0 ? rest : rest.slice(0, end)).trim()
             }
             const body = `${notes}\n\n### Installing\n\n`
-              + `- macOS 13.3 or later (Apple Silicon and Intel): open \`xjyutping-Tool_${version}_universal.dmg\`, drag the app into Applications, open it once and allow it in System Settings, Privacy & Security, "Open anyway" (the app is not signed with an Apple Developer ID).\n`
-              + (windows ? `- Windows 10 or 11: run \`xjyutping-Tool_${version}_x64-setup.exe\`; if SmartScreen warns about an unknown publisher, choose "More info", then "Run anyway".\n` : '')
+              + `- macOS 13.3 or later (Apple Silicon and Intel): open \`JyutPen_${version}_universal.dmg\`, drag the app into Applications, open it once and allow it in System Settings, Privacy & Security, "Open anyway" (the app is not signed with an Apple Developer ID).\n`
+              + (windows ? `- Windows 10 or 11: run \`JyutPen_${version}_x64-setup.exe\`; if SmartScreen warns about an unknown publisher, choose "More info", then "Run anyway".\n` : '')
               + '\n'
               + `${windows ? 'Neither needs' : 'It does not need'} Python or TeX on the computer. See the README for how to use the tool.`
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner, repo: context.repo.repo,
-              tag_name: `v${version}`, target_commitish: context.sha, name: `xjyutping-Tool ${version}`,
+              tag_name: `v${version}`, target_commitish: context.sha, name: `粵筆 · JyutPen ${version}`,
               body, draft: true })
             return data.id
 
@@ -146,7 +146,7 @@ jobs:
         timeout-minutes: 5
         run: |
           $report = Join-Path $env:RUNNER_TEMP 'self-test.txt'
-          $app = Start-Process -FilePath .\xjyutping-Tool.exe -ArgumentList '--self-test', $report -PassThru -Wait
+          $app = Start-Process -FilePath .\JyutPen.exe -ArgumentList '--self-test', $report -PassThru -Wait
           Get-Content $report
           exit $app.ExitCode
       - name: Self-test the built app (macOS)
@@ -155,7 +155,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set +e
-          xjyutping-Tool.app/Contents/MacOS/xjyutping-Tool --self-test "$RUNNER_TEMP/self-test.txt"
+          JyutPen.app/Contents/MacOS/JyutPen --self-test "$RUNNER_TEMP/self-test.txt"
           status=$?
           cat "$RUNNER_TEMP/self-test.txt"
           exit $status

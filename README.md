@@ -1,11 +1,11 @@
-# xjyutping-Tool
+# 粵筆 · JyutPen
 
-This project is a desktop teaching tool for Cantonese lessons, built on the
-xjyutping packages. It is for teachers who want their vocabulary and sentences
-shown with Jyutping above every character while they type in class, and a
-vocabulary list for the students at the end of the lesson. The tool runs on
-macOS and Windows and needs neither Python nor TeX on the computer, since both
-are bundled with it.
+JyutPen (粵筆, "Cantonese pen"; called xjyutping-Tool up to 1.3.4) is a
+desktop teaching tool for Cantonese lessons, built on the xjyutping packages.
+It is for teachers who want their vocabulary and sentences shown with Jyutping
+above every character while they type in class, and a vocabulary list for the
+students at the end of the lesson. The tool runs on macOS and Windows and
+needs neither Python nor TeX on the computer, since both are bundled with it.
 
 ## What it does
 
@@ -34,22 +34,25 @@ packed characters, fancy tone marks and a new page for each part.
 
 ### macOS
 
-1. Open `xjyutping-Tool_<version>_universal.dmg` and drag xjyutping-Tool into Applications
+1. Open `JyutPen_<version>_universal.dmg` and drag JyutPen into Applications
 2. Open the app once from Applications, then allow it in System Settings, Privacy & Security, "Open anyway"
 
 The second step is needed because the app is not signed with an Apple
 Developer ID. The app needs macOS 13.3 or later and runs on both Apple Silicon
-and Intel Macs.
+and Intel Macs. When updating from xjyutping-Tool, delete `xjyutping-Tool` from
+Applications; JyutPen keeps its lessons, settings and corrections.
 
 ### Windows
 
-1. Run `xjyutping-Tool_<version>_x64-setup.exe`
+1. Run `JyutPen_<version>_x64-setup.exe`
 2. If SmartScreen warns about an unknown publisher, choose "More info", then "Run anyway"
 
 The installer installs for the current user only and needs no administrator
 rights. It uses Microsoft Edge WebView2, which Windows 11 and updated Windows
 10 already include; on a computer without it and without internet access, the
-installer cannot add it.
+installer cannot add it. When updating from xjyutping-Tool, uninstall it in
+Settings, Apps, leaving "Delete the application data" unticked: JyutPen goes
+on using that data, the lessons, settings and corrections.
 
 ## Using the tool
 
@@ -256,8 +259,15 @@ xjyutping/
 4. Run `CI=true npm run tauri build -- --target universal-apple-darwin` for the macOS app and `.dmg`
 
 The `CI=true` makes Tauri skip arranging the `.dmg` window through Finder,
-which fails when the build does not run in a logged-in Terminal. Before each
-run, `scripts/vendor.mjs` copies the Python package, the
+which fails when the build does not run in a logged-in Terminal. Tauri
+compiles `src-tauri/icons/AppIcon.icon` with Xcode's `actool`. The `actool` of
+Xcode 27.1 fails on every Icon Composer document ("Failed to create a catalog
+from the Icon Studio document … Bad file descriptor"), so on a Mac with it,
+point `DEVELOPER_DIR` at Xcode 26, or take `icons/AppIcon.icon` out of
+`bundle.icon` in `src-tauri/tauri.conf.json` for that build (the app then has
+the light icon only). The workflow builds on macOS 26 with Xcode 26.
+
+Before each run, `scripts/vendor.mjs` copies the Python package, the
 xjyutping LaTeX package and the Pyodide runtime into the app and downloads
 Tectonic and the fonts, each checked against a pinned sha256 and cached in
 `.downloads/`. The environment variables `XJYUTPING_PY` and `XJYUTPING_TEX`
@@ -278,16 +288,24 @@ both builds have passed. Started by hand (Actions, build, "Run workflow"), the
 workflow only builds, and the installers are kept as artifacts of the run.
 With "release" ticked it releases the version of `package.json` instead of
 step 2, making the tag when the release is published, and with "windows"
-unticked it builds and releases the macOS `.dmg` only.
+unticked it builds and releases the macOS `.dmg` only. `WINDOWS-BUILD.md`
+explains how to build the Windows installer on a Windows computer and add it
+to such a release.
 
 ### Changing the app icon
 
-The icon is made from `src-tauri/icons/icon-source.png`, the character 粵 in
-brush ink on a white tile with rounded corners (1024 by 1024 pixels).
+The icon is `src-tauri/icons/AppIcon.icon`, an Icon Composer document: 粵 in
+Noto Serif CJK HK Bold under jyut⁶ in Source Sans 3 Semibold, joined by a blue
+brace, over two glass waves. Each layer has its colours for the light and the
+dark look, and white for the tinted one; macOS 26 and later show it with the
+Liquid Glass effect (Tauri compiles it into `Assets.car`).
 
-1. Replace `src-tauri/icons/icon-source.png`
-2. Run `npx tauri icon src-tauri/icons/icon-source.png`
-3. Delete the `android` and `ios` folders it writes into `src-tauri/icons`
+1. Edit `src-tauri/icons/AppIcon.icon` in Icon Composer
+2. Run `scripts/icon.sh`, which exports it for the systems that cannot use it:
+   `icon-source.png` (the light icon on the 1024 px grid of macOS icons), the
+   `.icns` of older macOS, the Windows `.ico` and the PNGs made from it by
+   `tauri icon`, and `mark-light.png` and `mark-dark.png` for the window's
+   header
 
 ### Changing the PDF template
 
@@ -335,12 +353,12 @@ Chinese font is copied to compile.
 - `npm run check` checks the types of the interface with svelte-check, which
   also runs before every build
 - `cargo test` in `src-tauri` tests the file name and log helpers
-- `xjyutping-Tool --self-test <file>` runs a built app, loads every bundled
+- `JyutPen --self-test <file>` runs a built app, loads every bundled
   font in its window, checks that the window fits its screen and that the
   preview scrolls, reads a sample lesson with corrections, compiles it (and
   once more with each commercial font installed on the computer) with the bundled engine without asking where to
   save, writes a report to the file and quits with 0 on success (on macOS the
-  program is `xjyutping-Tool.app/Contents/MacOS/xjyutping-Tool`, and CI runs
+  program is `JyutPen.app/Contents/MacOS/JyutPen`, and CI runs
   it on Windows)
 
 ## Licences

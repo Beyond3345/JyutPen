@@ -15,7 +15,7 @@
   // the file name or the title, and a dot while there are unsaved changes
   $effect(() => {
     const name = store.path ? store.path.split(/[\\/]/).pop()! : store.lesson.title || 'Untitled lesson'
-    setWindowTitle(`${name}${store.dirty ? ' •' : ''} — xjyutping-Tool`)
+    setWindowTitle(`${name}${store.dirty ? ' •' : ''} — 粵筆 · JyutPen`)
   })
 
   // the chosen fonts of the lesson, in the window as in the PDF

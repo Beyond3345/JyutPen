@@ -54,7 +54,7 @@ export const commands = {
 /** asks before replacing a lesson with unsaved changes */
 export async function askSaveDiscard(): Promise<'Save' | 'Discard' | 'Cancel'> {
   const res = await message('This lesson has changes that are not saved in a lesson file.',
-    { title: 'xjyutping-Tool', kind: 'warning', buttons: { yes: 'Save', no: 'Discard', cancel: 'Cancel' } })
+    { title: '粵筆 · JyutPen', kind: 'warning', buttons: { yes: 'Save', no: 'Discard', cancel: 'Cancel' } })
   if (res === 'Save') return 'Save'
   if (res === 'Discard') return 'Discard'
   return 'Cancel'
@@ -65,7 +65,7 @@ export async function askClearHistory(n: number) {
   const text = `Delete the ${n} recorded correction(s) from this computer? Export them first if they have not been `
     + 'sent to the maintainer. The corrections in your lessons stay.'
   if (!TAURI) return confirm(text)
-  const res = await message(text, { title: 'xjyutping-Tool', kind: 'warning', buttons: { ok: 'Clear history', cancel: 'Cancel' } })
+  const res = await message(text, { title: '粵筆 · JyutPen', kind: 'warning', buttons: { ok: 'Clear history', cancel: 'Cancel' } })
   return res === 'Clear history'
 }
 

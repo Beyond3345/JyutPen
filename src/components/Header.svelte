@@ -2,14 +2,18 @@
   import { store } from '../lib/lesson.svelte'
   import Icon from './Icon.svelte'
   import IconButton from './IconButton.svelte'
-  import mark from '../../src-tauri/icons/128x128@2x.png'
+  import mark from '../../src-tauri/icons/mark-light.png'
+  import markDark from '../../src-tauri/icons/mark-dark.png'
 
   const mod = navigator.platform.startsWith('Mac') ? '⌘' : 'Ctrl+'
   const missing = $derived(store.missing.length)
 </script>
 
 <header hidden={store.present}>
-  <img class="mark" src={mark} alt="" width="30" height="30" />
+  <picture>
+    <source srcset={markDark} media="(prefers-color-scheme: dark)" />
+    <img class="mark" src={mark} alt="" width="30" height="30" />
+  </picture>
   <div class="lesson">
     <input class="title" placeholder="Untitled lesson" aria-label="Title" value={store.lesson.title}
       oninput={e => store.set('title', e.currentTarget.value)} />

@@ -1,4 +1,4 @@
-// xjyutping-Tool: the window is App.svelte; readings come from py/app.py under
+// 粵筆 · JyutPen: the window is App.svelte; readings come from py/app.py under
 // Pyodide (lib/python.ts), files and the PDF from src-tauri/src/main.rs.
 import { mount } from 'svelte'
 import App from './App.svelte'
