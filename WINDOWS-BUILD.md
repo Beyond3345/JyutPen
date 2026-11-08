@@ -46,11 +46,11 @@ git config --global core.autocrlf false
 Then, in PowerShell, in the folder that is to hold the three repositories:
 
 ```powershell
-git clone https://github.com/Beyond3345/xjyutping-Tool
+git clone https://github.com/Beyond3345/JyutPen
 git clone https://github.com/Beyond3345/xjyutping-py
 git clone https://github.com/Beyond3345/xjyutping-tex
-git -C xjyutping-Tool checkout v1.4.0
-Select-String -Path xjyutping-Tool\.github\workflows\build.yml -Pattern 'XJYUTPING_(PY|TEX)_COMMIT'
+git -C JyutPen checkout v1.4.0
+Select-String -Path JyutPen\.github\workflows\build.yml -Pattern 'XJYUTPING_(PY|TEX)_COMMIT'
 ```
 
 The last command prints the two commits. For 1.4.0 they are:
@@ -65,7 +65,7 @@ first.
 
 ## 2. Fetch the bundled files
 
-In PowerShell, in `xjyutping-Tool`:
+In PowerShell, in `JyutPen`:
 
 ```powershell
 npm ci
@@ -79,7 +79,7 @@ Pyodide, each checked against a pinned sha256. It ends with a line such as
 
 ## 3. Check the PDF engine
 
-In Git Bash, in `xjyutping-Tool`:
+In Git Bash, in `JyutPen`:
 
 ```bash
 PYTHON=python scripts/compile-check.sh --engine-only
@@ -91,7 +91,7 @@ before it builds.
 
 ## 4. Build
 
-In PowerShell, in `xjyutping-Tool`:
+In PowerShell, in `JyutPen`:
 
 ```powershell
 npx tauri build --bundles nsis
@@ -126,18 +126,18 @@ that data (the lessons, settings and corrections).
 
 ## 6. Add it to the release
 
-Upload the installer, from `xjyutping-Tool`:
+Upload the installer, from `JyutPen`:
 
 ```powershell
-gh release upload v1.4.0 src-tauri\target\release\bundle\nsis\JyutPen_1.4.0_x64-setup.exe --repo Beyond3345/xjyutping-Tool
+gh release upload v1.4.0 src-tauri\target\release\bundle\nsis\JyutPen_1.4.0_x64-setup.exe --repo Beyond3345/JyutPen
 ```
 
 Then add Windows to the release notes, which were written for macOS only:
 
 ```powershell
-gh release view v1.4.0 --repo Beyond3345/xjyutping-Tool --json body -q .body > notes.md
+gh release view v1.4.0 --repo Beyond3345/JyutPen --json body -q .body > notes.md
 notepad notes.md
-gh release edit v1.4.0 --repo Beyond3345/xjyutping-Tool --notes-file notes.md
+gh release edit v1.4.0 --repo Beyond3345/JyutPen --notes-file notes.md
 ```
 
 In `notes.md`, under "Installing", add this line after the one for macOS:

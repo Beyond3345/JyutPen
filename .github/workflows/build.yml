@@ -89,7 +89,7 @@ jobs:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v7
         with:
-          path: xjyutping-Tool
+          path: JyutPen
       - uses: actions/checkout@v7
         with:
           repository: Beyond3345/xjyutping-py
@@ -104,7 +104,7 @@ jobs:
         with:
           node-version: lts/*
           cache: npm
-          cache-dependency-path: xjyutping-Tool/package-lock.json
+          cache-dependency-path: JyutPen/package-lock.json
       - uses: actions/setup-python@v7
         with:
           python-version: '3.13'
@@ -113,27 +113,27 @@ jobs:
           targets: ${{ runner.os == 'macOS' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
       - uses: swatinem/rust-cache@v2
         with:
-          workspaces: xjyutping-Tool/src-tauri
+          workspaces: JyutPen/src-tauri
       # Tectonic and the fonts, pinned by sha256 in vendor.mjs and py/fonts.json
       - uses: actions/cache@v6
         with:
-          path: xjyutping-Tool/.downloads
-          key: downloads-${{ runner.os }}-${{ hashFiles('xjyutping-Tool/scripts/vendor.mjs', 'xjyutping-Tool/py/fonts.json') }}
+          path: JyutPen/.downloads
+          key: downloads-${{ runner.os }}-${{ hashFiles('JyutPen/scripts/vendor.mjs', 'JyutPen/py/fonts.json') }}
       - run: npm ci
-        working-directory: xjyutping-Tool
+        working-directory: JyutPen
       - run: node scripts/vendor.mjs
-        working-directory: xjyutping-Tool
+        working-directory: JyutPen
       # the bundled engine and TeX files compile the fixture lesson on this system
       - run: scripts/compile-check.sh --engine-only
         shell: bash
-        working-directory: xjyutping-Tool
+        working-directory: JyutPen
         env:
           PYTHON: python
       - uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          projectPath: xjyutping-Tool
+          projectPath: JyutPen
           releaseId: ${{ needs.release.outputs.id }}
           args: ${{ runner.os == 'Windows' && '--bundles nsis' || '--target universal-apple-darwin' }}
           uploadWorkflowArtifacts: true
@@ -141,7 +141,7 @@ jobs:
       # it with the bundled engine, then writes a report (see src-tauri/src/main.rs)
       - name: Self-test the built app (Windows)
         if: runner.os == 'Windows'
-        working-directory: xjyutping-Tool/src-tauri/target/release
+        working-directory: JyutPen/src-tauri/target/release
         shell: pwsh
         timeout-minutes: 5
         run: |
@@ -151,7 +151,7 @@ jobs:
           exit $app.ExitCode
       - name: Self-test the built app (macOS)
         if: runner.os == 'macOS'
-        working-directory: xjyutping-Tool/src-tauri/target/universal-apple-darwin/release/bundle/macos
+        working-directory: JyutPen/src-tauri/target/universal-apple-darwin/release/bundle/macos
         timeout-minutes: 5
         run: |
           set +e

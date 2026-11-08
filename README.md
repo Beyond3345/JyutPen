@@ -248,13 +248,13 @@ repositories sit side by side, as in the workspace.
 
 ```
 xjyutping/
-  xjyutping-Tool/   this repository
+  JyutPen/          this repository (xjyutping-Tool up to 1.4.0)
   xjyutping-py/     https://github.com/Beyond3345/xjyutping-py
   xjyutping-tex/    https://github.com/Beyond3345/xjyutping-tex
 ```
 
 1. Install Node.js and Rust, and on macOS run `rustup target add x86_64-apple-darwin`
-2. Run `npm ci` in `xjyutping-Tool`
+2. Run `npm ci` in `JyutPen`
 3. Run `npm run tauri dev` to try the app
 4. Run `CI=true npm run tauri build -- --target universal-apple-darwin` for the macOS app and `.dmg`
 
