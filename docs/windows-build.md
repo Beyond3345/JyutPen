@@ -5,7 +5,7 @@ computer and adds it to a GitHub release that was made for macOS only. That
 release comes from the build workflow started by hand with "release" ticked
 and "windows" unticked (see
 [Building from source](../README.md#building-from-source) in the README). The
-examples use version 1.4.0; for another version, replace it everywhere.
+examples use version 2.0.0; for another version, replace it everywhere.
 
 Do not push a tag for the version from Windows. A pushed tag `v…` starts the
 full workflow, which builds both installers again and makes a second draft
@@ -50,15 +50,15 @@ Then, in PowerShell, in the folder that is to hold the three repositories:
 git clone https://github.com/Beyond3345/JyutPen
 git clone https://github.com/Beyond3345/xjyutping-py
 git clone https://github.com/Beyond3345/xjyutping-tex
-git -C JyutPen checkout v1.4.0
+git -C JyutPen checkout v2.0.0
 Select-String -Path JyutPen\.github\workflows\build.yml -Pattern 'XJYUTPING_(PY|TEX)_COMMIT'
 ```
 
-The last command prints the two commits. For 1.4.0 they are:
+The last command prints the two commits. For 2.0.0 they are:
 
 ```powershell
-git -C xjyutping-py checkout b24cf669fa9a980e838dd249bbfe37ef9e845bcf
-git -C xjyutping-tex checkout 3c945828abca6ae573a7515f57a8f98f1f88a32f
+git -C xjyutping-py checkout 8afd25f7dfdffcd4c18b85fa29a41bf8bae50d8a
+git -C xjyutping-tex checkout 6dd2264a7e49e358ee0ecc7f565023dd74649bfc
 ```
 
 If the repositories were cloned before, run `git fetch` in each of them
@@ -76,7 +76,7 @@ node scripts/vendor.mjs
 `vendor.mjs` copies the Python package and the LaTeX package from the two
 sibling repositories, and downloads Tectonic for Windows, the fonts and
 Pyodide, each checked against a pinned sha256. It ends with a line such as
-`vendor: ready for x86_64-pc-windows-msvc (… xjyutping-tex 1.5.4 …)`.
+`vendor: ready for x86_64-pc-windows-msvc (… xjyutping-tex 2.0.0 …)`.
 
 ## 3. Check the PDF engine
 
@@ -99,7 +99,7 @@ npx tauri build --bundles nsis
 ```
 
 The installer is
-`src-tauri\target\release\bundle\nsis\JyutPen_1.4.0_x64-setup.exe`. The
+`src-tauri\target\release\bundle\nsis\JyutPen_2.0.0_x64-setup.exe`. The
 build ignores `src-tauri/icons/Assets.car`, which only macOS uses; Windows
 gets `icon.ico`.
 
@@ -117,10 +117,10 @@ Get-Content $report
 $app.ExitCode
 ```
 
-The report starts with `app 1.4.0, xjyutping-py 1.3.3, xjyutping-tex 1.5.4`
+The report starts with `app 2.0.0, xjyutping-py 2.0.0, xjyutping-tex 2.0.0`
 and ends with `self-test ok`, and the exit code is 0.
 
-Then install `JyutPen_1.4.0_x64-setup.exe`, open JyutPen, type a line and
+Then install `JyutPen_2.0.0_x64-setup.exe`, open JyutPen, type a line and
 generate a PDF. If xjyutping-Tool is installed, uninstall it in Settings,
 Apps, leaving "Delete the application data" unticked: JyutPen keeps using
 that data (the lessons, settings and corrections).
@@ -130,21 +130,21 @@ that data (the lessons, settings and corrections).
 Upload the installer, from `JyutPen`:
 
 ```powershell
-gh release upload v1.4.0 src-tauri\target\release\bundle\nsis\JyutPen_1.4.0_x64-setup.exe --repo Beyond3345/JyutPen
+gh release upload v2.0.0 src-tauri\target\release\bundle\nsis\JyutPen_2.0.0_x64-setup.exe --repo Beyond3345/JyutPen
 ```
 
 Then add Windows to the release notes, which were written for macOS only:
 
 ```powershell
-gh release view v1.4.0 --repo Beyond3345/JyutPen --json body -q .body > notes.md
+gh release view v2.0.0 --repo Beyond3345/JyutPen --json body -q .body > notes.md
 notepad notes.md
-gh release edit v1.4.0 --repo Beyond3345/JyutPen --notes-file notes.md
+gh release edit v2.0.0 --repo Beyond3345/JyutPen --notes-file notes.md
 ```
 
 In `notes.md`, under "Installing", add this line after the one for macOS:
 
 ```
-- Windows 10 or 11: run `JyutPen_1.4.0_x64-setup.exe`; if SmartScreen warns about an unknown publisher, choose "More info", then "Run anyway".
+- Windows 10 or 11: run `JyutPen_2.0.0_x64-setup.exe`; if SmartScreen warns about an unknown publisher, choose "More info", then "Run anyway".
 ```
 
 Change "It does not need Python or TeX" in the last line to "Neither needs
