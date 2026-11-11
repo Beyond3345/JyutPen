@@ -22,6 +22,28 @@ human or agent.
 
 There are no unreleased changes yet.
 
+## [2.0.0] - 2026-11-12
+
+### Added
+
+- Simplified characters. Settings has a new section, Readings, with
+  "Characters": Auto (the default), Traditional or Simplified. Text typed in
+  simplified characters is read under its traditional forms and printed as
+  typed. Auto decides paragraph by paragraph (lines between blank lines), then
+  by the whole lesson, and reads text without any sign of either script as
+  traditional; a short simplified lesson is safer with Simplified.
+- Lazy sounds (懶音). "Lazy sounds" in the same section: Off (the default), On
+  (n- as l-, no ng-, gw- and kw- as g- and k- before o, syllabic ng as m) or
+  All mergers (also -ng as -n and -k as -t). The readings offered for a
+  correction follow it; readings typed as corrections are left alone.
+- Both settings are kept in the lesson, like the fonts.
+
+### Changed
+
+- The bundled packages are xjyutping-py 2.0.0 and xjyutping-tex 2.0.0, and
+  the TeX bundle carries their new data file `xjyutping-simp.def`.
+- The version jumps from 1.4.0 to 2.0.0 to match the two packages.
+
 ## [1.4.0] - 2026-11-08
 
 ### Changed

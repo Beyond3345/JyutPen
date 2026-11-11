@@ -2,6 +2,9 @@
 
 export type Kind = 'char' | 'word' | 'sentence'
 export type Audience = 'en' | 'zh' | 'yue'
+/** the script of the text, 'auto' deciding per paragraph, and the lazy sounds (xjyutping's script= and lazy=) */
+export type Script = 'auto' | 'traditional' | 'simplified'
+export type Lazy = 'off' | 'on' | 'all'
 /** the switches of the PDF settings */
 export type PdfOption = 'toneChart' | 'evenSpacing' | 'fancy' | 'separatePages'
 
@@ -42,6 +45,8 @@ export type Lesson = {
   separatePages: boolean
   chineseFont: string // ids of py/fonts.json
   jyutpingFont: string
+  script: Script
+  lazy: Lazy
   text: string
   words: Record<string, string>
   spots: Record<string, Record<string, string>>

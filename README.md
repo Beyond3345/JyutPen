@@ -170,6 +170,13 @@ The fonts and the PDF settings are kept in the lesson, and a new lesson keeps
 those of the previous one. Lessons saved before these settings existed open
 with the defaults.
 
+Under Readings are two settings for how the text is read,
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| Characters | Auto | Auto reads each paragraph (lines between blank lines) as simplified or traditional by the characters in it, then by the whole lesson, and as traditional where nothing tells. Traditional and Simplified fix the script. Simplified text is printed as typed. A short lesson in simplified characters is safer with Simplified. |
+| Lazy sounds | Off | On writes the lazy sounds (懶音): n- as l-, no ng-, gw- and kw- as g- and k- before o, and syllabic ng as m (你我 *lei5 o5*). All mergers also writes -ng as -n and -k as -t. Readings typed as corrections are left alone. |
+
 ### The tone chart
 
 With Tone chart ticked, the vocabulary list starts with a chart of the six

@@ -27,8 +27,8 @@ permissions:
   contents: write
 
 env:
-  XJYUTPING_PY_COMMIT: b24cf669fa9a980e838dd249bbfe37ef9e845bcf   # xjyutping-py 1.3.3
-  XJYUTPING_TEX_COMMIT: 3c945828abca6ae573a7515f57a8f98f1f88a32f  # xjyutping-tex 1.5.4
+  XJYUTPING_PY_COMMIT: 8afd25f7dfdffcd4c18b85fa29a41bf8bae50d8a   # xjyutping-py 2.0.0
+  XJYUTPING_TEX_COMMIT: 6dd2264a7e49e358ee0ecc7f565023dd74649bfc  # xjyutping-tex 2.0.0
 
 jobs:
   release:

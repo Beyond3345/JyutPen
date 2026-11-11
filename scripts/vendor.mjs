@@ -96,7 +96,7 @@ async function texbundle() {
   const tl = path.join(root, 'tex', 'tl2024')
   if (fs.existsSync(tl)) for (const f of fs.readdirSync(tl)) fs.copyFileSync(path.join(tl, f), path.join(out, f))
   else console.warn('vendor: tex/tl2024/ is missing; run scripts/harvest_bundle.py')
-  for (const f of ['xjyutping.sty', 'xjyutping-chars.def', 'xjyutping-words.def']) {
+  for (const f of ['xjyutping.sty', 'xjyutping-chars.def', 'xjyutping-words.def', 'xjyutping-simp.def']) {
     fs.copyFileSync(path.join(TEX, f), path.join(out, f))
   }
   for (const f of FONTS) fs.copyFileSync(await font(f), path.join(out, f.file))

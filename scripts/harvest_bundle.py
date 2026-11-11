@@ -46,7 +46,7 @@ def main():
         # the package, its data and the fonts sit next to the document, so they are
         # read from there and stay out of the harvested files
         fonts = [f['file'] for f in app.FONTS.values() if not f.get('texlive') and not f.get('system')]
-        for f in ['xjyutping.sty', 'xjyutping-chars.def', 'xjyutping-words.def'] + fonts:
+        for f in ['xjyutping.sty', 'xjyutping-chars.def', 'xjyutping-words.def', 'xjyutping-simp.def'] + fonts:
             shutil.copy(RES / f, job / f)
         # the three audiences, then each other font, as scripts/compile-check.sh
         jobs = [{'audience': a} for a in ('en', 'zh', 'yue')] + [

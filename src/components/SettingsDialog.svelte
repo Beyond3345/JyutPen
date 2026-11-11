@@ -1,11 +1,13 @@
 <script lang="ts">
   import { store, FONTS } from '../lib/lesson.svelte'
-  import type { Audience, PdfOption } from '../lib/types'
+  import type { Audience, Lazy, PdfOption, Script } from '../lib/types'
   import Icon from './Icon.svelte'
   import Segmented from './Segmented.svelte'
   import Switch from './Switch.svelte'
 
   const AUDIENCES: [Audience, string][] = [['en', 'English'], ['zh', '普通話'], ['yue', '廣東話']]
+  const SCRIPTS: [Script, string][] = [['auto', 'Auto'], ['traditional', 'Traditional'], ['simplified', 'Simplified']]
+  const LAZY: [Lazy, string][] = [['off', 'Off'], ['on', 'On'], ['all', 'All mergers']]
   const SWITCHES: [PdfOption, string, string][] = [
     ['evenSpacing', 'Evenly spaced characters', 'Every character as wide as the longest Jyutping; off packs them tightly'],
     ['fancy', 'Fancy Jyutping', 'Tone strokes and small tone numbers, in the style of Visual Jyutping'],
@@ -64,6 +66,19 @@
         you install them on this computer.</p>
     </li>
   </ul>
+  <h3>Readings</h3>
+  <ul>
+    <li>
+      <span class="name">Characters</span>
+      <Segmented label="Characters" value={store.lesson.script} options={SCRIPTS} onchange={v => store.set('script', v)} />
+      <p>Auto reads each paragraph as simplified or traditional by the characters only one of them uses; the text is printed as typed</p>
+    </li>
+    <li>
+      <span class="name">Lazy sounds</span>
+      <Segmented label="Lazy sounds" value={store.lesson.lazy} options={LAZY} onchange={v => store.set('lazy', v)} />
+      <p>懶音: n- as l-, no ng-, gw- and kw- as g- and k- before o, ng as m (你 lei5, 我 o5); all mergers also -ng as -n and -k as -t (講 gon2)</p>
+    </li>
+  </ul>
   <h3>Preview</h3>
   <ul>
     <li>
@@ -87,7 +102,7 @@
     {/each}
   </ul>
 
-  <footer>The fonts and the PDF settings are kept in the lesson and carried over to a new one.</footer>
+  <footer>The fonts, the readings and the PDF settings are kept in the lesson and carried over to a new one.</footer>
 </dialog>
 
 <style>

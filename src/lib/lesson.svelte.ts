@@ -67,12 +67,12 @@ export type Editor = {
   anchor: DOMRect
 }
 
-/** a new lesson keeps the author, the students' language, the fonts and the PDF settings */
+/** a new lesson keeps the author, the students' language, the fonts, the reading settings and the PDF settings */
 function blank(prev: Lesson | null): Lesson {
   return { format: 1, title: '', author: prev?.author ?? '', date: '', audience: prev?.audience ?? 'en',
     toneChart: prev?.toneChart ?? false, evenSpacing: prev?.evenSpacing ?? true, fancy: prev?.fancy ?? true,
     separatePages: prev?.separatePages ?? false, chineseFont: prev?.chineseFont ?? defaultFont('chinese'),
-    jyutpingFont: prev?.jyutpingFont ?? defaultFont('jyutping'), text: '', words: {}, spots: {}, kinds: {} }
+    jyutpingFont: prev?.jyutpingFont ?? defaultFont('jyutping'), script: prev?.script ?? 'auto', lazy: prev?.lazy ?? 'off', text: '', words: {}, spots: {}, kinds: {} }
 }
 
 const clampSize = (px: number) => Math.max(16, Math.min(72, px))
@@ -95,7 +95,7 @@ class Store {
   toast = $state<{ text: string; error: boolean } | null>(null)
   flash = $state<number[]>([])
 
-  /** the rows depend only on the text, the corrections and the fonts, not on the title or the audience */
+  /** the rows depend only on the text, the corrections, the fonts and the reading settings, not on the title or the audience */
   rows: Row[] = $derived.by(() => (this.ready ? python.render(this.readingInput()) : []))
 
   /** characters without a reading, which keep the PDF from being made */
@@ -112,10 +112,10 @@ class Store {
 
   /** the parts of the lesson that py/app.py reads to render (and to offer candidates) */
   readingInput(): Lesson {
-    const { text, words, spots, kinds, chineseFont, jyutpingFont } = this.lesson
+    const { text, words, spots, kinds, chineseFont, jyutpingFont, script, lazy } = this.lesson
     // read so that the rows follow an installed font once it is found
     void this.installed[chineseFont]
-    return $state.snapshot({ text, words, spots, kinds, chineseFont, jyutpingFont }) as Lesson
+    return $state.snapshot({ text, words, spots, kinds, chineseFont, jyutpingFont, script, lazy }) as Lesson
   }
 
   #settings!: KV
@@ -266,7 +266,7 @@ class Store {
     this.#settings.set('dirty', this.dirty)
   }
 
-  set<K extends 'title' | 'author' | 'date' | 'audience' | 'chineseFont' | 'jyutpingFont' | PdfOption>(field: K, value: Lesson[K]) {
+  set<K extends 'title' | 'author' | 'date' | 'audience' | 'chineseFont' | 'jyutpingFont' | 'script' | 'lazy' | PdfOption>(field: K, value: Lesson[K]) {
     this.lesson[field] = value
     this.changed()
   }

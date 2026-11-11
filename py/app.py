@@ -129,11 +129,36 @@ def _lacking(ch, fonts, jyutping=False):
     return font, next((f for f in others if _in(_glyph_ranges(f), ch)), None)
 
 
-def _read_line(line, words, spots):
+# the reading settings with their choices, the first the default: the script of
+# the text and the lazy sounds (xjyutping's script= and lazy=)
+READING = {'script': ('auto', 'traditional', 'simplified'), 'lazy': ('off', 'on', 'all')}
+LAZY = {'off': False, 'on': True, 'all': 'all'}
+
+
+def _reading(lesson):
+    return {k: lesson[k] if lesson.get(k) in v else v[0] for k, v in READING.items()}
+
+
+def _scripts(lines, script):
+    """The script of each line. The lines are read one at a time, so 'auto' is
+    decided here as xjyutping decides it for one text: per paragraph (lines
+    between blank lines), else by the whole text, else traditional."""
+    if script != 'auto':
+        return [script] * len(lines)
+    whole = _j.detect_script('\n'.join(lines)) or 'traditional'
+    out, start = [], 0
+    for k, line in enumerate(lines + ['']):
+        if not line:
+            out += [_j.detect_script(''.join(lines[start:k])) or whole] * (k - start) + [whole]
+            start = k + 1
+    return out[:len(lines)]
+
+
+def _read_line(line, words, spots, script='traditional', lazy=False):
     """Per code point of one line: the automatic reading and its segment, then
     the word and spot corrections of the lesson (spot > word > automatic)."""
-    ann = _j.annotate(line)
-    segs = _j.segment(line)
+    ann = _j.annotate(line, lazy=lazy, script=script)
+    segs = _j.segment(line, lazy=lazy, script=script)
     positions = [i for i, (_, r) in enumerate(ann) if r is not None]
     seg_pos, seg_of, k = [], {}, 0
     for n, s in enumerate(segs):
@@ -202,9 +227,11 @@ def _rows(lesson):
     is not printed, so it lacks nothing."""
     words, spots, kinds = lesson.get('words', {}), lesson.get('spots', {}), lesson.get('kinds', {})
     fonts = _fonts(lesson)
+    reading = _reading(lesson)
+    lines = _lines(lesson.get('text', ''))
     rows, seen = [], set()
-    for line in _lines(lesson.get('text', '')):
-        items, seg_pos = _read_line(line, words, spots.get(line, {}))
+    for line, script in zip(lines, _scripts(lines, reading['script'])):
+        items, seg_pos = _read_line(line, words, spots.get(line, {}), script, LAZY[reading['lazy']])
         has_cjk = any(it['cjk'] for it in items)
         auto = _auto_kind(line, items, seg_pos) if has_cjk else None
         kind = kinds.get(line, auto) if has_cjk else None
@@ -237,11 +264,12 @@ def render(lesson_json):
 def candidates(lesson_json, row, i):
     """Readings to offer for character i of a row: those the teacher already
     gave this character in the lesson, the reading in context, then all."""
-    rows = _rows(json.loads(lesson_json))
+    lesson = json.loads(lesson_json)
+    rows = _rows(lesson)
     it = rows[row]['items'][i]
     ch = it['c']
     given = [x['r'] for r in rows for x in r['items'] if x['c'] == ch and x['src'] in ('word', 'spot')]
-    found = given + [it['a'] or ''] + _j.get_jyutpings(ch, '', n=20)
+    found = given + [it['a'] or ''] + _j.get_jyutpings(ch, '', n=20, lazy=LAZY[_reading(lesson)['lazy']])
     return json.dumps({'given': list(dict.fromkeys(given)), 'auto': it['a'],
                        'all': list(dict.fromkeys(s for s in found if SYL.match(s)))}, ensure_ascii=False)
 
@@ -280,7 +308,8 @@ def clean(lesson_json):
             spots[line] = good
     kinds = {k: v for k, v in part('kinds').items() if v in ('char', 'word', 'sentence')}
     lesson.update(words=words, spots=spots, kinds=kinds, audience=_audience(lesson),
-                  toneChart=lesson.get('toneChart') is True, **_options(lesson), **_fonts(lesson))
+                  toneChart=lesson.get('toneChart') is True, **_options(lesson), **_fonts(lesson),
+                  **_reading(lesson))
     for field in ('title', 'author', 'date', 'text'):
         lesson[field] = str(lesson.get(field) or '')
     return json.dumps({'lesson': lesson, 'dropped': dropped}, ensure_ascii=False)

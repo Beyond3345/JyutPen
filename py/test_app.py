@@ -80,9 +80,9 @@ def test_spot_ignored_inside_a_dictionary_word():
 
 
 def test_spot_on_character_without_data_and_over_a_word():
-    r = rows('佢𠮶度')
+    r = rows('佢兡度')
     assert r[0]['items'][1]['cjk'] and r[0]['items'][1]['r'] is None
-    r = rows('佢𠮶度', spots={'佢𠮶度': {'1': 'go2'}})
+    r = rows('佢兡度', spots={'佢兡度': {'1': 'go2'}})
     assert readings(r[0]) == ['keoi5', 'go2', 'dou6']
     r = rows('你好', words={'你好': 'nei5 hou3'}, spots={'你好': {'1': 'hou2'}})
     assert readings(r[0]) == ['nei5', 'hou2']
@@ -111,8 +111,8 @@ def test_lines_are_normalised():
 def test_candidates_and_check():
     c = json.loads(app.candidates(json.dumps(lesson('行')), 0, 0))
     assert c['auto'] == 'haang4' and 'hong4' in c['all']
-    c = json.loads(app.candidates(json.dumps(lesson('佢𠮶度\n𠮶', spots={'佢𠮶度': {'1': 'go2'}})), 1, 0))
-    assert c['given'] == ['go2'] and '𠮶' not in c['all']
+    c = json.loads(app.candidates(json.dumps(lesson('佢兡度\n兡', spots={'佢兡度': {'1': 'go2'}})), 1, 0))
+    assert c['given'] == ['go2'] and '兡' not in c['all']
     assert json.loads(app.check(' HONG4')) == {'value': 'hong4', 'valid': True, 'known': True}
     assert not json.loads(app.check('xyz9'))['valid']
     assert json.loads(app.check('zzz1')) == {'value': 'zzz1', 'valid': True, 'known': False}
@@ -165,13 +165,13 @@ def test_escaping_in_every_cell():
 
 def test_injected_reading_is_rejected():
     with pytest.raises(ValueError):
-        tex('佢𠮶度', spots={'佢𠮶度': {'1': r'}\input{x}'}})
+        tex('佢兡度', spots={'佢兡度': {'1': r'}\input{x}'}})
 
 
 def test_missing_reading_raises_and_passes_when_corrected():
-    with pytest.raises(ValueError, match='𠮶'):
-        tex('佢𠮶度')
-    assert r'\xjyutping{佢𠮶度}{keoi5 go2 dou6}' in tex('佢𠮶度', spots={'佢𠮶度': {'1': 'go2'}})
+    with pytest.raises(ValueError, match='兡'):
+        tex('佢兡度')
+    assert r'\xjyutping{佢兡度}{keoi5 go2 dou6}' in tex('佢兡度', spots={'佢兡度': {'1': 'go2'}})
 
 
 def test_audience_sections_and_duplicates():
@@ -369,3 +369,17 @@ def test_installed_fonts():
         assert got['chineseFont'] == font['id']
     finally:
         app.SYSTEM_GLYPHS.pop(font['id'], None)
+
+
+def test_reading_settings():
+    simp = '我只有三只猫。银行里面有三只猫。'
+    assert readings(rows(simp)[0]) == readings(rows(simp, script='simplified')[0])
+    assert readings(rows(simp, script='traditional')[0]) != readings(rows(simp, script='simplified')[0])
+    # auto decides per paragraph, then by the whole text: the first line alone has no simplified-only character
+    mixed = rows('三只\n这只\n\n三只', script='auto')
+    assert [readings(r)[1] for r in mixed if r['cjk']] == ['zek3', 'zek3', 'zek3']
+    assert readings(rows('你我講', lazy='on')[0]) == ['lei5', 'o5', 'gong2']
+    assert readings(rows('你我講', lazy='all')[0]) == ['lei5', 'o5', 'gon2']
+    assert readings(rows('你我講', lazy='odd')[0]) == ['nei5', 'ngo5', 'gong2']
+    got = json.loads(app.clean(json.dumps(lesson('x', script='hanzi'))))['lesson']
+    assert (got['script'], got['lazy']) == ('auto', 'off')
