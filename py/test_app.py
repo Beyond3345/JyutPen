@@ -74,9 +74,11 @@ def test_spot_applies_to_its_occurrence_only():
     assert readings(r[1]) == ['haang4']
 
 
-def test_spot_ignored_inside_a_dictionary_word():
-    r = rows('銀行', spots={'銀行': {'1': 'haang4'}})
-    assert readings(r[0]) == ['ngan4', 'hong4']
+def test_spot_inside_a_dictionary_word_stays_in_its_place():
+    # 地下 corrected inside 地下樂團 must not change 地下 on another line
+    r = rows('地下樂團\n地下\n喺地下', spots={'地下樂團': {'1': 'haa6'}})
+    assert readings(r[0]) == ['dei6', 'haa6', 'ngok6', 'tyun4'] and r[0]['items'][1]['src'] == 'spot'
+    assert readings(r[1]) == ['dei6', 'haa2'] and readings(r[2]) == ['hai2', 'dei6', 'haa2']
 
 
 def test_spot_on_character_without_data_and_over_a_word():

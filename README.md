@@ -73,20 +73,19 @@ PDF.
 
 ### Correcting a reading
 
-The editor applies a correction in one of two ways, and its first line says
-which.
+A correction applies to the place where it is made, and nowhere else. The
+same word or character in another line, or elsewhere in the same line, keeps
+xjyutping's reading: 地下 corrected inside 地下樂團 does not change 地下
+standing alone.
 
-- A correction to a word applies to that word in the whole lesson, including
-  inside sentences typed later, wherever xjyutping reads those characters as
-  that word. Clicking any character of a word, shown with a thin line under it,
-  opens the word. The buttons ◀ + and + ▶ add the neighbouring characters, so
-  that two characters xjyutping reads separately can be corrected as one word.
-- A correction to a character that stands alone applies to that place only.
-  The same character elsewhere keeps xjyutping's reading, since it is usually
-  read in the standard way there.
+- Clicking any character of a word, shown with a thin line under it, opens
+  the word. The buttons ◀ + and + ▶ add the neighbouring characters, so that
+  several characters can be corrected together.
+- Clicking a character that stands alone opens that character.
 
-Word corrections are shown with a blue line under the word, and character
-corrections in blue. Saving the reading xjyutping gave removes the correction,
+Corrected characters are shown in blue. Lessons saved before 2.0.0 keep their
+word corrections, which applied to the word in the whole lesson and are shown
+with a blue line under the word; Reset removes one. Saving the reading xjyutping gave removes the correction,
 and so does Reset. Corrections (n) lists the corrections of the lesson, each
 with its own Reset.
 

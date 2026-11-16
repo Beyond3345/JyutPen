@@ -353,8 +353,8 @@ class Store {
 
   hasCorrection(r: number, span: number[]) {
     const row = this.rows[r]
-    return span.length > 1 ? spanKey(row, span) in this.lesson.words
-      : String(span[0]) in (this.lesson.spots[row.line] ?? {})
+    const marks = this.lesson.spots[row.line] ?? {}
+    return span.some(p => String(p) in marks) || (span.length > 1 && spanKey(row, span) in this.lesson.words)
   }
 
   /** checks the typed syllables, then saves them; a syllable xjyutping does not know needs a second Save */
@@ -379,30 +379,29 @@ class Store {
     const same = syls !== null && syls.join(' ') === autos.join(' ')
     const before = this.rows
     const time = new Date().toISOString()
-    if (span.length > 1) {
-      const key = spanKey(row, span)
-      const marks = this.lesson.spots[row.line]
-      if (marks) for (const p of span) delete marks[String(p)]
-      if (syls === null || same) {
-        delete this.lesson.words[key]
-        this.#db.delete(`w|${key}`)
-      } else {
-        this.lesson.words[key] = syls.join(' ')
-        this.#db.set(`w|${key}`, { kind: 'word', text: key, readings: syls.join(' '), auto: autos.join(' '),
-          first_line: row.line, time, ...this.#versions })
-      }
-    } else {
-      const p = span[0]
-      const marks = (this.lesson.spots[row.line] ??= {})
-      if (syls === null || same) {
+    // a correction belongs to the place where it was made: each changed syllable is
+    // kept for its position in this line, so the same word elsewhere is not touched
+    const key = spanKey(row, span)
+    const reset = syls === null || same
+    const marks = (this.lesson.spots[row.line] ??= {})
+    span.forEach((p, k) => {
+      const it = row.items[p]
+      // under a lesson-wide word correction of an older lesson, keep every syllable
+      if (reset || (syls![k] === it.a && it.src !== 'word')) {
         delete marks[String(p)]
         this.#db.delete(`c|${row.line}|${p}`)
       } else {
-        marks[String(p)] = syls[0]
-        this.#db.set(`c|${row.line}|${p}`, { kind: 'char', char: row.items[p].c, line: row.line, index: p,
-          auto: autos[0], corrected: syls[0], type: row.items[p].type, time, ...this.#versions })
+        marks[String(p)] = syls![k]
+        this.#db.set(`c|${row.line}|${p}`, { kind: 'char', char: it.c, line: row.line, index: p,
+          auto: it.a, corrected: syls![k], type: it.type, ...(span.length > 1 ? { word: key } : {}),
+          time, ...this.#versions })
       }
-      if (!Object.keys(marks).length) delete this.lesson.spots[row.line]
+    })
+    if (!Object.keys(marks).length) delete this.lesson.spots[row.line]
+    // Reset also drops the lesson-wide word correction of an older lesson
+    if (reset && span.length > 1 && key in this.lesson.words) {
+      delete this.lesson.words[key]
+      this.#db.delete(`w|${key}`)
     }
     this.closeEditor()
     this.changed()

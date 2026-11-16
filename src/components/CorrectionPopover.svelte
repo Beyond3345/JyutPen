@@ -12,7 +12,6 @@
   const row = $derived(e ? store.rows[e.r] : null)
   const word = $derived(!!e && e.span.length > 1)
   const key = $derived(e && row ? spanKey(row, e.span) : '')
-  const places = $derived(store.rows.reduce((n, x) => n + (x.line.split(key).length - 1), 0))
   const cand = $derived(e ? python.candidates(store.readingInput(), e.r, e.active) : null)
 
   // placed under the character, or above it when there is no room below
@@ -56,8 +55,7 @@
     aria-label="Correct the reading">
     <p class="scope">
       {#if word}
-        Changes <strong>{key}</strong> wherever it is read as a word in this lesson
-        <span class="muted">(up to {places} place{places === 1 ? '' : 's'})</span>
+        Changes <strong>{key}</strong> here only
       {:else}
         Only this character, here
       {/if}
@@ -90,9 +88,9 @@
     <div class="actions">
       <div class="grow">
         <button class="btn ghost" disabled={!store.canWiden(-1)} onclick={() => store.widen(-1)}
-          title="Add the character before, to correct them as one word"><Icon name="chevron-left" size={15} />Add</button>
+          title="Add the character before, to correct them together"><Icon name="chevron-left" size={15} />Add</button>
         <button class="btn ghost" disabled={!store.canWiden(1)} onclick={() => store.widen(1)}
-          title="Add the character after, to correct them as one word">Add<Icon name="chevron-right" size={15} /></button>
+          title="Add the character after, to correct them together">Add<Icon name="chevron-right" size={15} /></button>
       </div>
       <button class="btn ghost" disabled={!store.hasCorrection(e.r, e.span)} onclick={() => store.apply(e.r, e.span, null)}>Reset</button>
       <button class="btn" onclick={() => store.closeEditor()}>Cancel</button>
@@ -123,9 +121,6 @@
     color: var(--text);
     font-family: var(--font-han);
     font-weight: 600;
-  }
-  .muted {
-    color: var(--text-3);
   }
   .fields {
     display: flex;

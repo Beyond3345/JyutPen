@@ -40,6 +40,12 @@ There are no unreleased changes yet.
 
 ### Changed
 
+- A correction now applies only to the place where it is made. Before, the
+  correction of a word applied to that word in the whole lesson, so 地下
+  corrected inside 地下樂團 also changed 地下 standing alone. Each corrected
+  syllable is kept for its position in its line, also inside a word. Word
+  corrections of lessons saved before 2.0.0 still apply as they did, and
+  Reset removes them.
 - The bundled packages are xjyutping-py 2.0.0 and xjyutping-tex 2.0.0, and
   the TeX bundle carries their new data file `xjyutping-simp.def`.
 - The version jumps from 1.4.0 to 2.0.0 to match the two packages.

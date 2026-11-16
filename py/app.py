@@ -156,7 +156,11 @@ def _scripts(lines, script):
 
 def _read_line(line, words, spots, script='traditional', lazy=False):
     """Per code point of one line: the automatic reading and its segment, then
-    the word and spot corrections of the lesson (spot > word > automatic)."""
+    the word and spot corrections of the lesson (spot > word > automatic).  A
+    spot is a correction at one place of one line, also inside a word; the app
+    saves every correction as spots since 2.0.0, so that a word corrected in
+    one place keeps its reading elsewhere.  'words' are the lesson-wide word
+    corrections of lessons saved before that."""
     ann = _j.annotate(line, lazy=lazy, script=script)
     segs = _j.segment(line, lazy=lazy, script=script)
     positions = [i for i, (_, r) in enumerate(ann) if r is not None]
@@ -200,9 +204,7 @@ def _read_line(line, words, spots, script='traditional', lazy=False):
     for idx, syl in spots.items():
         p = int(idx)
         if p < len(items) and items[p]['cjk']:
-            n = items[p]['seg']
-            if n is None or not joined(n):
-                items[p].update(r=syl, src='spot', key=None, at=None)
+            items[p].update(r=syl, src='spot', key=None, at=None)
     return items, seg_pos
 
 
