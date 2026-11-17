@@ -20,6 +20,10 @@ human or agent.
 
 ## [Unreleased]
 
+There are no unreleased changes yet.
+
+## [2.0.1] - 2026-11-17
+
 ### Fixed
 
 - Word corrections saved before 2.0.0 still applied to the word in the whole
