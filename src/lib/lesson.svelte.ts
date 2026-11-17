@@ -144,6 +144,11 @@ class Store {
       this.loadError = String(e)
       return
     }
+    // a draft from before 2.0.0 may hold lesson-wide word corrections: keep each at its place
+    if (Object.keys(this.lesson.words ?? {}).length) {
+      this.lesson = python.localize($state.snapshot(this.lesson) as Lesson)
+      this.#saveDraft()
+    }
     await this.checkInstalled()
     this.ready = true
     this.#warnNotInstalled()

@@ -83,9 +83,10 @@ standing alone.
   several characters can be corrected together.
 - Clicking a character that stands alone opens that character.
 
-Corrected characters are shown in blue. Lessons saved before 2.0.0 keep their
-word corrections, which applied to the word in the whole lesson and are shown
-with a blue line under the word; Reset removes one. Saving the reading xjyutping gave removes the correction,
+Corrected characters are shown in blue. Lessons saved before 2.0.0 corrected
+a word in the whole lesson; when such a lesson is opened, each of those
+corrections is kept at every place where it applied, so the lesson reads as
+before and each place can then be changed or reset on its own. Saving the reading xjyutping gave removes the correction,
 and so does Reset. Corrections (n) lists the corrections of the lesson, each
 with its own Reset.
 

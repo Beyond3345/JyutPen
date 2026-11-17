@@ -20,7 +20,14 @@ human or agent.
 
 ## [Unreleased]
 
-There are no unreleased changes yet.
+### Fixed
+
+- Word corrections saved before 2.0.0 still applied to the word in the whole
+  lesson, so correcting 地下 in 地下樂團 went on changing 地下 elsewhere in a
+  lesson or draft carried over from 1.4.0. They are now turned into
+  corrections at each place where they applied when the lesson or the draft
+  is opened: the readings stay the same, and a later change at one place
+  leaves the others alone.
 
 ## [2.0.0] - 2026-11-12
 

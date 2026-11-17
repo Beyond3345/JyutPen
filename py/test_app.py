@@ -74,6 +74,19 @@ def test_spot_applies_to_its_occurrence_only():
     assert readings(r[1]) == ['haang4']
 
 
+def test_old_word_corrections_become_corrections_in_place():
+    # a lesson saved before 2.0.0 with 地下 corrected as a word for the whole lesson
+    old = lesson('地下樂團\n地下', words={'地下': 'dei6 haa6'})
+    got = json.loads(app.clean(json.dumps(old)))['lesson']
+    assert got['words'] == {} and got['spots'] == {'地下樂團': {'1': 'haa6'}, '地下': {'1': 'haa6'}}
+    assert [readings(r) for r in rows(got['text'], spots=got['spots'])] == [
+        ['dei6', 'haa6', 'ngok6', 'tyun4'], ['dei6', 'haa6']]
+    # now a change at one place leaves the other alone
+    got['spots']['地下樂團'] = {}
+    assert readings(rows(got['text'], spots=got['spots'])[1]) == ['dei6', 'haa6']
+    assert json.loads(app.localize(json.dumps(old)))['spots'] == {'地下樂團': {'1': 'haa6'}, '地下': {'1': 'haa6'}}
+
+
 def test_spot_inside_a_dictionary_word_stays_in_its_place():
     # 地下 corrected inside 地下樂團 must not change 地下 on another line
     r = rows('地下樂團\n地下\n喺地下', spots={'地下樂團': {'1': 'haa6'}})
@@ -121,11 +134,12 @@ def test_candidates_and_check():
 
 
 def test_clean_drops_bad_corrections():
-    raw = lesson('x', words={'銀行': 'ngan4 haang4', '行': 'hang4', '你好': 'nei5', '我哋': 'ngo5 }'},
+    raw = lesson('行\n去銀行', words={'銀行': 'ngan4 haang4', '行': 'hang4', '你好': 'nei5', '我哋': 'ngo5 }'},
                  spots={'行': {'0': 'hang4', 'a': 'x', '1': 'bad'}}, kinds={'行': 'odd'}, audience='fr')
     got = json.loads(app.clean(json.dumps(raw)))
-    assert got['lesson']['words'] == {'銀行': 'ngan4 haang4'}
-    assert got['lesson']['spots'] == {'行': {'0': 'hang4'}}
+    # the good word correction is kept at the place where it applies
+    assert got['lesson']['words'] == {}
+    assert got['lesson']['spots'] == {'行': {'0': 'hang4'}, '去銀行': {'2': 'haang4'}}
     assert got['lesson']['kinds'] == {} and got['lesson']['audience'] == 'en'
     assert set(got['dropped']) >= {'行', '你好', '我哋'}
 

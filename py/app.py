@@ -281,6 +281,25 @@ def check(s):
     return json.dumps({'value': s, 'valid': bool(SYL.match(s)), 'known': s in _known_syllables()})
 
 
+def _localize(lesson):
+    """Turn the lesson-wide word corrections of lessons saved before 2.0.0 into
+    corrections at each place where they apply, so that a later change at one
+    place leaves the others alone. The readings stay as they were."""
+    if not lesson.get('words'):
+        return lesson
+    spots = lesson.setdefault('spots', {})
+    for row in _rows(lesson):
+        for p, it in enumerate(row['items']):
+            if it['src'] == 'word' and it['r'] != it['a']:
+                spots.setdefault(row['line'], {})[str(p)] = it['r']
+    lesson['words'] = {}
+    return lesson
+
+
+def localize(lesson_json):
+    return json.dumps(_localize(json.loads(lesson_json)), ensure_ascii=False)
+
+
 def clean(lesson_json):
     """A lesson read from a file, keeping only well-formed corrections."""
     lesson = json.loads(lesson_json)
@@ -314,7 +333,7 @@ def clean(lesson_json):
                   **_reading(lesson))
     for field in ('title', 'author', 'date', 'text'):
         lesson[field] = str(lesson.get(field) or '')
-    return json.dumps({'lesson': lesson, 'dropped': dropped}, ensure_ascii=False)
+    return json.dumps({'lesson': _localize(lesson), 'dropped': dropped}, ensure_ascii=False)
 
 
 def migrate(lesson_json, old_text):

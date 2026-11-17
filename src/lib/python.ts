@@ -18,6 +18,7 @@ export const python = {
   render: (lesson: Lesson): Row[] => JSON.parse(py.render(json(lesson))),
   candidates: (lesson: Lesson, row: number, i: number): Candidates => JSON.parse(py.candidates(json(lesson), row, i)),
   check: (s: string): Check => JSON.parse(py.check(s)),
+  localize: (lesson: Lesson): Lesson => JSON.parse(py.localize(json(lesson))),
   clean: (text: string): { lesson: Lesson; dropped: string[] } => JSON.parse(py.clean(text)),
   migrate: (lesson: Lesson, oldText: string): { lesson: Lesson; lost: number; moves: [string, number, string, number][] } =>
     JSON.parse(py.migrate(json(lesson), oldText)),
